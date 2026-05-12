@@ -338,6 +338,7 @@ const programs = {
 };
 
 let mode = 'stretch';
+let currentDay = 1;
 let openCards = new Set();
 let doneCards = new Set();
 let showDone = false;
@@ -352,7 +353,7 @@ function setMode(m) {
 }
 
 function selectDay(d) {
-  document.querySelectorAll('.day-btn').forEach((b, i) => b.classList.toggle('active', i === d - 1));
+  currentDay = d;
   openCards.clear();
   doneCards.clear();
   showDone = false;
@@ -406,7 +407,7 @@ function render() {
     </div>` : '';
 
   const dayBtns = ['Mon', 'Wed', 'Fri'].map((d, i) => `
-    <button class="day-btn${i === 0 ? ' active' : ''}" onclick="selectDay(${i+1})">
+    <button class="day-btn${currentDay === i + 1 ? ' active' : ''}" onclick="selectDay(${i+1})">
       <span>${d}</span>Day ${i+1}
     </button>`).join('');
 
