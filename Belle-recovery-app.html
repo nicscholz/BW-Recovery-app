@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Recovery" />
+  <meta name="theme-color" content="#4a7c59" />
+  <title>Recovery &amp; Strength</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sage: #4a7c59;
+      --sage-light: #e8f0eb;
+      --sage-mid: #a8c5b0;
+      --warm: #c8845a;
+      --warm-light: #faeee6;
+      --warm-mid: #e0b090;
+      --text: #1a1a18;
+      --text-muted: #6b6b65;
+      --bg: #faf8f5;
+      --surface: #ffffff;
+      --border: rgba(0,0,0,0.1);
+      --border-mid: rgba(0,0,0,0.18);
+      --secondary-bg: #f1efe8;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text: #f0ede8;
+        --text-muted: #9b9990;
+        --bg: #1c1b18;
+        --surface: #262522;
+        --border: rgba(255,255,255,0.1);
+        --border-mid: rgba(255,255,255,0.18);
+        --secondary-bg: #2c2b27;
+        --sage-light: rgba(74,124,89,0.18);
+        --sage-mid: rgba(74,124,89,0.35);
+        --warm-light: rgba(200,132,90,0.15);
+        --warm-mid: rgba(200,132,90,0.35);
+      }
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      border-bottom: 0.5px solid var(--border);
+      padding: calc(var(--safe-top) + 14px) 20px 14px;
+    }
+    .top-bar h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.2px;
+    }
+    .top-bar h1 em { font-style: italic; color: var(--sage); }
+    .top-bar p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Main scroll area ── */
+    .main { flex: 1; overflow-y: auto; padding: 16px 20px calc(var(--safe-bottom) + 90px); }
+
+    /* ── Bottom nav ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--surface);
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      padding-bottom: var(--safe-bottom);
+      z-index: 50;
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 10px 8px 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .nav-btn i { font-size: 22px; }
+    .nav-btn.active-stretch { color: var(--sage); }
+    .nav-btn.active-strength { color: var(--warm); }
+
+    /* ── Day selector ── */
+    .day-row { display: flex; gap: 8px; margin-bottom: 14px; }
+    .day-btn {
+      flex: 1; padding: 9px 4px; border: 0.5px solid var(--border);
+      background: var(--surface); border-radius: var(--radius-md);
+      font-family: 'DM Sans', sans-serif; font-size: 11px;
+      color: var(--text-muted); cursor: pointer; text-align: center;
+      transition: all 0.2s;
+    }
+    .day-btn span { display: block; font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 1px; }
+    .day-btn.active { border-color: var(--sage); background: var(--sage-light); }
+    .day-btn.active span { color: var(--sage); }
+
+    /* ── Program intro card ── */
+    .intro-card {
+      padding: 14px 16px; border-radius: var(--radius-lg);
+      margin-bottom: 12px; border: 0.5px solid var(--border);
+    }
+    .intro-card.stretch { background: var(--sage-light); border-color: var(--sage-mid); }
+    .intro-card.strength { background: var(--warm-light); border-color: var(--warm-mid); }
+    .intro-card h2 { font-family: 'DM Serif Display', serif; font-size: 17px; font-weight: 400; margin-bottom: 4px; }
+    .intro-card.stretch h2 { color: var(--sage); }
+    .intro-card.strength h2 { color: var(--warm); }
+    .intro-card p { font-size: 12.5px; line-height: 1.6; color: var(--text-muted); }
+    .pill {
+      display: inline-block; font-size: 10.5px; font-weight: 500;
+      padding: 3px 10px; border-radius: 20px; margin-bottom: 6px;
+    }
+    .pill.stretch { background: rgba(74,124,89,0.15); color: var(--sage); }
+    .pill.strength { background: rgba(200,132,90,0.15); color: var(--warm); }
+
+    /* ── Stats ── */
+    .stats-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .stat { flex: 1; background: var(--secondary-bg); border-radius: var(--radius-md); padding: 10px 8px; text-align: center; }
+    .stat .val { font-size: 13px; font-weight: 500; color: var(--text); }
+    .stat .lbl { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+
+    /* ── Progress bar ── */
+    .prog-wrap { margin-bottom: 14px; }
+    .prog-bar { height: 3px; background: var(--secondary-bg); border-radius: 2px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+    .prog-fill.stretch { background: var(--sage); }
+    .prog-fill.strength { background: var(--warm); }
+    .prog-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+
+    /* ── Exercise cards ── */
+    .ex-list { display: flex; flex-direction: column; gap: 9px; }
+    .ex-card {
+      background: var(--surface); border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .ex-card.done { opacity: 0.55; }
+    .ex-card.open { border-color: var(--border-mid); }
+
+    .ex-header {
+      display: flex; align-items: center; gap: 11px;
+      padding: 13px 15px; cursor: pointer;
+    }
+    .ex-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 500; flex-shrink: 0;
+    }
+    .ex-num.stretch { background: var(--sage-light); color: var(--sage); }
+    .ex-num.strength { background: var(--warm-light); color: var(--warm); }
+    .ex-name { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.3; }
+    .ex-meta { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+    .ex-chevron { font-size: 16px; color: var(--text-muted); margin-left: auto; transition: transform 0.2s; flex-shrink: 0; }
+    .ex-card.open .ex-chevron { transform: rotate(180deg); }
+
+    .ex-body {
+      padding: 0 15px 14px;
+      border-top: 0.5px solid var(--border);
+      display: none;
+    }
+    .ex-card.open .ex-body { display: block; }
+    .ex-body p { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-top: 12px; }
+    .tip { display: flex; gap: 7px; align-items: flex-start; margin-top: 7px; font-size: 12px; color: var(--text-muted); }
+    .tip i { font-size: 12px; margin-top: 2px; flex-shrink: 0; }
+    .tip.stretch i { color: var(--sage); }
+    .tip.strength i { color: var(--warm); }
+    .tips { margin-top: 10px; }
+
+    .mark-btn {
+      margin-top: 13px;
+      padding: 8px 16px;
+      border: 0.5px solid var(--border);
+      background: transparent;
+      border-radius: var(--radius-md);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    /* ── Finish button ── */
+    .finish-btn {
+      width: 100%; margin-top: 14px; padding: 15px;
+      border-radius: var(--radius-lg); border: none;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .finish-btn.stretch { background: var(--sage); color: #fff; }
+    .finish-btn.strength { background: var(--warm); color: #fff; }
+
+    /* ── Completed screen ── */
+    .done-screen { text-align: center; padding: 3rem 1rem 2rem; }
+    .done-screen .icon { font-size: 44px; margin-bottom: 14px; }
+    .done-screen .icon.stretch { color: var(--sage); }
+    .done-screen .icon.strength { color: var(--warm); }
+    .done-screen h3 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; }
+    .done-screen p { font-size: 13px; color: var(--text-muted); margin-top: 8px; line-height: 1.6; }
+    .reset-btn {
+      margin-top: 20px; padding: 11px 28px;
+      border: 0.5px solid var(--border-mid); background: transparent;
+      border-radius: var(--radius-md); font-family: 'DM Sans', sans-serif;
+      font-size: 13px; color: var(--text-muted); cursor: pointer;
+    }
+
+    /* ── Splash / install tip ── */
+    .install-tip {
+      background: var(--surface); border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 12px 15px;
+      margin-bottom: 14px; display: flex; gap: 10px; align-items: flex-start;
+    }
+    .install-tip i { font-size: 18px; color: var(--sage); flex-shrink: 0; margin-top: 1px; }
+    .install-tip p { font-size: 12px; color: var(--text-muted); line-height: 1.55; }
+    .install-tip strong { color: var(--text); font-weight: 500; }
+    .dismiss-tip { background: none; border: none; font-size: 16px; color: var(--text-muted); cursor: pointer; margin-left: auto; flex-shrink: 0; padding: 0 0 0 6px; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <h1>Recovery <em>&amp; Strength</em></h1>
+    <p>3 days a week · lower back support</p>
+  </div>
+
+  <div class="main" id="main"></div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn" id="nav-stretch" onclick="setMode('stretch')">
+      <i class="ti ti-wind"></i>Stretch
+    </button>
+    <button class="nav-btn" id="nav-strength" onclick="setMode('strength')">
+      <i class="ti ti-barbell"></i>Strength
+    </button>
+  </nav>
+
+<script>
+const programs = {
+  stretch: {
+    label: 'stretch',
+    title: 'Gentle Stretch & Mobility',
+    desc: 'Use this program on days with active pain or tension. Move slowly, breathe into each stretch, and never push into sharp pain.',
+    totalTime: '20–25 min',
+    sets: '1 round',
+    focus: 'Mobility & Relief',
+    exercises: [
+      { name: 'Diaphragmatic Breathing', meta: '5 breaths × 3 sets',
+        desc: 'Lie on your back with knees bent. Place one hand on your chest, one on your belly. Breathe deeply into your belly — let it rise. Exhale slowly. This activates the deep core and calms the nervous system.',
+        tips: ['Belly rises first, chest stays relatively still', 'Exhale should be slightly longer than inhale', 'This primes your body for all exercises that follow'] },
+      { name: 'Knee-to-Chest Stretch', meta: '30 sec each side × 2',
+        desc: 'Lie on your back. Gently pull one knee toward your chest, keeping the other leg flat or slightly bent. Hold gently — no forcing. Switch sides. This decompresses the lumbar spine.',
+        tips: ['Use your hands behind the thigh, not on the shin', 'Keep your head and shoulders relaxed on the floor', 'Breathe steadily throughout the hold'] },
+      { name: 'Supine Spinal Twist', meta: '30–45 sec each side',
+        desc: 'Lie on your back, draw one knee to your chest then guide it across your body with the opposite hand. Extend your same-side arm out. Keep both shoulders touching the floor. A gentle rotation to release lumbar tension.',
+        tips: ["If the knee doesn't reach the floor, that's fine", 'Look away from the knee for a full spinal rotation', 'Let gravity do the work — no forcing'] },
+      { name: "Child's Pose", meta: '60–90 sec hold',
+        desc: 'From kneeling, sit your hips back toward your heels and extend your arms forward on the floor. Rest your forehead down. Gently lengthens the lower back and hip flexors.',
+        tips: ["Hips don't need to fully reach heels — just go where comfortable", 'Walk arms further forward to deepen the stretch', 'Breathe into the lower back — feel it expand'] },
+      { name: 'Cat–Cow Stretch', meta: '10 slow reps',
+        desc: 'On hands and knees, exhale as you round your back (cat), then inhale as you let the belly drop and lift your chest (cow). Move slowly and fluidly. One of the most effective movements for spinal mobility.',
+        tips: ['Lead with your breath — movement follows', 'Keep wrists under shoulders, knees under hips', 'Move at whatever range feels good today'] },
+      { name: 'Piriformis Stretch (Figure-4)', meta: '45 sec each side',
+        desc: 'Lie on your back with both knees bent. Cross one ankle over the opposite thigh and gently press the crossed knee away, or draw both legs toward your chest. Targets the piriformis and hip rotators.',
+        tips: ["If you feel it in the hip, you're in the right spot", 'Keep the supporting foot flat on the floor', 'Flex the top foot to protect the knee'] },
+      { name: 'Hamstring Towel Stretch', meta: '30 sec each leg × 2',
+        desc: 'Lie on your back. Loop a towel or strap around one foot and gently draw the leg toward you, keeping it as straight as comfort allows. Tight hamstrings tug on the pelvis and worsen lower back pain.',
+        tips: ['A slight bend in the knee is fine', 'Keep the other leg flat and heavy on the floor', 'Pull gently — this is not a competition'] },
+    ]
+  },
+  strength: {
+    label: 'strength',
+    title: 'Beginner Strength Program',
+    desc: 'Low-intensity strength work for the core and lower body. These movements build supportive muscles around the lumbar spine. Focus on form over speed.',
+    totalTime: '30–35 min',
+    sets: '2–3 sets',
+    focus: 'Core & Lower Body',
+    exercises: [
+      { name: 'Dead Bug', meta: '6 reps each side × 2 sets',
+        desc: 'Lie on your back, arms toward the ceiling, knees bent at 90°. Slowly lower one arm behind your head while extending the opposite leg — without letting your lower back arch away from the floor. Return and alternate. Excellent deep core activation.',
+        tips: ['Lower back must stay in contact with the floor', 'Move only as far as you can maintain control', 'Exhale on the extension, inhale on the return'] },
+      { name: 'Glute Bridge', meta: '12 reps × 2–3 sets',
+        desc: 'Lie on your back, knees bent, feet flat hip-width apart. Press through your heels and lift your hips, squeezing your glutes at the top. Hold 2 seconds, lower slowly. Strengthens glutes and hamstrings — key stabilisers for the lower back.',
+        tips: ['Drive through the heels, not the toes', 'Squeeze the glutes at the top', 'Keep your ribs down and core lightly engaged'] },
+      { name: 'Bird Dog', meta: '6 reps each side × 2 sets',
+        desc: "On hands and knees, simultaneously extend one arm forward and the opposite leg back, keeping your back flat. Hold 3 seconds at the top, return with control. One of the gold-standard exercises for lumbar stability.",
+        tips: ["Imagine balancing a glass of water on your back", 'Extend from the hip and shoulder — don\'t just lift', 'Go slow — control is everything here'] },
+      { name: 'Clamshell', meta: '15 reps each side × 2 sets',
+        desc: 'Lie on your side with knees bent and stacked, hips slightly forward. Keeping your feet together, rotate your top knee upward. Lower with control. Targets hip abductors — supporting the pelvis and reducing lumbar load.',
+        tips: ["Don't let your hips roll backward as you lift", 'Keep the motion controlled — no swinging', 'Add a light resistance band above the knees to progress'] },
+      { name: 'Bodyweight Squat (Partial)', meta: '10 reps × 2–3 sets',
+        desc: 'Stand feet hip-to-shoulder width apart. Lower into a gentle squat — even a quarter squat is effective at this stage. Drive through the heels to stand. Builds quad and glute strength.',
+        tips: ['Sit back like you\'re reaching for a chair behind you', 'Keep chest tall and knees tracking over toes', 'Hold a doorframe for balance support if needed'] },
+      { name: 'Standing Hip Hinge', meta: '10 reps × 2 sets',
+        desc: 'Stand feet hip-width apart. Hinge forward at the hips (not the waist), pushing hips back, keeping a neutral spine. Return by driving hips forward and squeezing glutes. Teaches the spine-safe fundamental movement pattern.',
+        tips: ['Back stays flat — hinge at the hips like a door', 'Feel a gentle pull in the hamstrings — that\'s correct', 'Start with a very small range and build over time'] },
+      { name: 'Standing March', meta: '10 each side × 2 sets',
+        desc: 'Stand tall, core gently engaged. Lift one knee to hip height, hold 2 seconds, lower, and alternate. Trains single-leg balance and hip flexor strength while reinforcing trunk stability.',
+        tips: ['Stand near a wall for balance support', 'Keep your standing hip level — don\'t let it drop', 'Keep the movement slow and deliberate'] },
+    ]
+  }
+};
+
+let mode = 'stretch';
+let openCards = new Set();
+let doneCards = new Set();
+let showDone = false;
+let showTip = !localStorage.getItem('tip_dismissed');
+
+function setMode(m) {
+  mode = m;
+  openCards.clear();
+  doneCards.clear();
+  showDone = false;
+  render();
+}
+
+function selectDay(d) {
+  document.querySelectorAll('.day-btn').forEach((b, i) => b.classList.toggle('active', i === d - 1));
+  openCards.clear();
+  doneCards.clear();
+  showDone = false;
+  render();
+}
+
+function toggleCard(i) {
+  openCards.has(i) ? openCards.delete(i) : openCards.add(i);
+  render();
+}
+
+function toggleDone(i) {
+  doneCards.has(i) ? doneCards.delete(i) : doneCards.add(i);
+  render();
+}
+
+function finish() { showDone = true; render(); }
+function reset() { openCards.clear(); doneCards.clear(); showDone = false; render(); }
+
+function dismissTip() {
+  localStorage.setItem('tip_dismissed', '1');
+  showTip = false;
+  render();
+}
+
+function render() {
+  const p = programs[mode];
+  const total = p.exercises.length;
+  const done = doneCards.size;
+  const pct = Math.round((done / total) * 100);
+
+  document.getElementById('nav-stretch').className = 'nav-btn' + (mode === 'stretch' ? ' active-stretch' : '');
+  document.getElementById('nav-strength').className = 'nav-btn' + (mode === 'strength' ? ' active-strength' : '');
+
+  if (showDone) {
+    document.getElementById('main').innerHTML = `
+      <div class="done-screen">
+        <div class="icon ${mode}"><i class="ti ti-circle-check"></i></div>
+        <h3>Session complete!</h3>
+        <p>Great work. Rest, hydrate, and notice how your back feels over the next few hours.</p>
+        <button class="reset-btn" onclick="reset()">Start again</button>
+      </div>`;
+    return;
+  }
+
+  const tipHTML = showTip ? `
+    <div class="install-tip">
+      <i class="ti ti-device-mobile"></i>
+      <p><strong>Add to home screen</strong> — in Safari tap the Share button, then "Add to Home Screen" to use this app offline like a native app.</p>
+      <button class="dismiss-tip" onclick="dismissTip()" aria-label="Dismiss"><i class="ti ti-x"></i></button>
+    </div>` : '';
+
+  const dayBtns = ['Mon', 'Wed', 'Fri'].map((d, i) => `
+    <button class="day-btn${i === 0 ? ' active' : ''}" onclick="selectDay(${i+1})">
+      <span>${d}</span>Day ${i+1}
+    </button>`).join('');
+
+  const exHTML = p.exercises.map((ex, i) => `
+    <div class="ex-card${openCards.has(i) ? ' open' : ''}${doneCards.has(i) ? ' done' : ''}">
+      <div class="ex-header" onclick="toggleCard(${i})">
+        <div class="ex-num ${mode}">
+          ${doneCards.has(i) ? '<i class="ti ti-check"></i>' : i + 1}
+        </div>
+        <div>
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-meta">${ex.meta}</div>
+        </div>
+        <i class="ti ti-chevron-down ex-chevron"></i>
+      </div>
+      <div class="ex-body">
+        <p>${ex.desc}</p>
+        <div class="tips">${ex.tips.map(t => `
+          <div class="tip ${mode}"><i class="ti ti-point-filled"></i>${t}</div>`).join('')}
+        </div>
+        <button class="mark-btn" onclick="toggleDone(${i})">
+          <i class="ti ${doneCards.has(i) ? 'ti-x' : 'ti-check'}"></i>
+          ${doneCards.has(i) ? 'Mark incomplete' : 'Mark done'}
+        </button>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('main').innerHTML = `
+    ${tipHTML}
+    <div class="day-row">${dayBtns}</div>
+    <div class="intro-card ${mode}">
+      <div class="pill ${mode}">${mode === 'stretch' ? 'Pain relief & mobility' : 'Low-intensity strength'}</div>
+      <h2>${p.title}</h2>
+      <p>${p.desc}</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="val">${total}</div><div class="lbl">exercises</div></div>
+      <div class="stat"><div class="val">${p.sets}</div><div class="lbl">volume</div></div>
+      <div class="stat"><div class="val">${p.totalTime}</div><div class="lbl">duration</div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-bar"><div class="prog-fill ${mode}" style="width:${pct}%"></div></div>
+      <div class="prog-label"><span>${done} of ${total} done</span><span>${pct}%</span></div>
+    </div>
+    <div class="ex-list">${exHTML}</div>
+    ${done === total && total > 0 ? `
+      <button class="finish-btn ${mode}" onclick="finish()">
+        <i class="ti ti-confetti"></i> Finish session
+      </button>` : ''}
+  `;
+}
+
+render();
+</script>
+</body>
+</html>
